@@ -1,4 +1,4 @@
 import { ChevronRight } from "lucide-react-native"
-import { iconWithClassName } from "./helper"
+import { iconWithClassName } from "./iconWithClassname"
 iconWithClassName(ChevronRight)
 export { ChevronRight }

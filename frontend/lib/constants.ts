@@ -16,3 +16,22 @@ export const NAV_THEME = {
     text: "hsl(0 0% 98%)", // foreground
   },
 }
+
+export interface Language {
+  code: string
+  name: string
+  flag: string
+}
+
+export const AVAILABLE_LANGUAGES: Language[] = [
+  {
+    code: "fr",
+    name: "French",
+    flag: "🇫🇷",
+  },
+  {
+    code: "es",
+    name: "Spanish",
+    flag: "🇪🇸",
+  },
+]
