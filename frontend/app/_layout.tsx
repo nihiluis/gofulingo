@@ -16,6 +16,7 @@ import { Drawer } from "expo-router/drawer"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { Home } from "~/lib/icons/Home"
 import { PortalHost } from "@rn-primitives/portal"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -25,6 +26,8 @@ const DARK_THEME: Theme = {
   ...DarkTheme,
   colors: NAV_THEME.dark,
 }
+
+const queryClient = new QueryClient()
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -68,11 +71,13 @@ export default function RootLayout() {
 function NativeLayout({ isDarkColorScheme }: { isDarkColorScheme: boolean }) {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-        <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-        <DrawerNavigator isDarkColorScheme={isDarkColorScheme} />
-        <PortalHost />
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+          <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+          <DrawerNavigator isDarkColorScheme={isDarkColorScheme} />
+          <PortalHost />
+        </ThemeProvider>
+      </QueryClientProvider>
     </GestureHandlerRootView>
   )
 }
@@ -81,15 +86,21 @@ function NativeLayout({ isDarkColorScheme }: { isDarkColorScheme: boolean }) {
 function WebLayout({ isDarkColorScheme }: { isDarkColorScheme: boolean }) {
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-      <DrawerNavigator isDarkColorScheme={isDarkColorScheme} />
-      <PortalHost />
+      <QueryClientProvider client={queryClient}>
+        <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+        <DrawerNavigator isDarkColorScheme={isDarkColorScheme} />
+        <PortalHost />
+      </QueryClientProvider>
     </ThemeProvider>
   )
 }
 
 // Extracted drawer navigation to avoid code duplication
-function DrawerNavigator({ isDarkColorScheme }: { isDarkColorScheme: boolean }) {
+function DrawerNavigator({
+  isDarkColorScheme,
+}: {
+  isDarkColorScheme: boolean
+}) {
   return (
     <Drawer
       screenOptions={({ route }) => ({
