@@ -1,3 +1,5 @@
+import { LanguageCode } from "./api/vocabulary"
+
 export const NAV_THEME = {
   light: {
     background: "hsl(0 0% 100%)", // background
@@ -18,7 +20,7 @@ export const NAV_THEME = {
 }
 
 export interface Language {
-  code: string
+  code: LanguageCode
   name: string
   flag: string
 }
@@ -35,3 +37,6 @@ export const AVAILABLE_LANGUAGES: Language[] = [
     flag: "🇪🇸",
   },
 ]
+
+export const BACKEND_API_URL =
+  process.env.EXPO_PUBLIC_BACKEND_API_URL ?? "http://localhost:3000"

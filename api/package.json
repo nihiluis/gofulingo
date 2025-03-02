@@ -1,0 +1,33 @@
+{
+  "name": "gofulingo-api",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "bun run index.ts",
+    "dev": "bun run --hot index.ts",
+    "build": "bun build index.ts --outdir dist --target bun",
+    "test:watch": "vitest",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/pg": "^8.11.11",
+    "drizzle-kit": "^0.30.5",
+    "tsx": "^4.19.3"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "^1.1.17",
+    "@hono/zod-openapi": "^0.19.1",
+    "ai": "^4.1.47",
+    "await-protect": "^1.0.18",
+    "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.40.0",
+    "hono": "^4.7.2",
+    "pg": "^8.13.3",
+    "pino": "^9.6.0",
+    "zod": "^3.24.2"
+  }
+}

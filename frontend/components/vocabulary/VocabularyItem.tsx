@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { View, Text, Pressable } from "react-native"
+import { View, Pressable } from "react-native"
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -9,6 +9,7 @@ import {
 } from "~/components/ui/dropdown-menu"
 import { EllipsisVertical } from "~/lib/icons/EllipsisVertical"
 import { cn } from "~/lib/utils"
+import { GofuText } from "../ui/GofuText"
 
 export type VocabularyItemProps = {
   id: number
@@ -28,11 +29,12 @@ export default function VocabularyItem({
   const [open, setOpen] = useState(false)
 
   return (
-    <View className={cn(
-      "flex flex-row items-center justify-between p-3 border-b border-border",
-      className
-    )}>
-      <Text className="text-base text-foreground">{text}</Text>
+    <View
+      className={cn(
+        "flex flex-row items-center justify-between p-3 border-b border-border",
+        className
+      )}>
+      <GofuText className="text-base text-foreground">{text}</GofuText>
       <DropdownMenu onOpenChange={setOpen}>
         <DropdownMenuTrigger>
           <Pressable
@@ -43,11 +45,11 @@ export default function VocabularyItem({
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem onPress={() => onEdit(id, text)}>
-            <Text>Edit</Text>
+            <GofuText>Edit</GofuText>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onPress={() => onDelete(id)}>
-            <Text className="text-destructive">Delete</Text>
+            <GofuText className="text-destructive">Delete</GofuText>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

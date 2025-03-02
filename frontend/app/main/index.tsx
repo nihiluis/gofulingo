@@ -1,11 +1,11 @@
 import React from "react"
 import CenterLayout from "~/components/layout/CenterLayout"
-import Vocabulary from "~/components/vocabulary/Vocabulary"
+import VocabularyView from "~/components/vocabulary/VocabularyView"
 
 export default function HomeScreen() {
   return (
     <CenterLayout>
-      <Vocabulary />
+      <VocabularyView />
     </CenterLayout>
   )
 }
