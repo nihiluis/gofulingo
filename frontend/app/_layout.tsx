@@ -17,6 +17,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { Home } from "~/lib/icons/Home"
 import { PortalHost } from "@rn-primitives/portal"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { Folders } from "~/lib/icons/Folders"
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -127,12 +128,21 @@ function DrawerNavigator({
           : NAV_THEME.light.text,
       })}>
       <Drawer.Screen
-        name="main"
+        name="vocab"
         options={{
           headerShown: false,
           title: "Vocabulary",
           drawerLabel: "Vocabulary",
           drawerIcon: ({ color }) => <Home size={24} color={color} />,
+        }}
+      />
+      <Drawer.Screen
+        name="flashcards"
+        options={{
+          headerShown: false,
+          title: "Flashcards",
+          drawerLabel: "Flashcards",
+          drawerIcon: ({ color }) => <Folders size={24} color={color} />,
         }}
       />
       <Drawer.Screen
