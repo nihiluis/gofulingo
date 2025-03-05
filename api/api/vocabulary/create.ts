@@ -3,6 +3,8 @@ import type { AppRouteHandler } from "@/lib/types"
 import { createRoute } from "@hono/zod-openapi"
 import { VocabularyService } from "../../lib/vocabulary"
 import { SingleVocabularyResponseSchema, VocabularySchema } from "./schema"
+import type { TranslatorService } from "@/lib/translator"
+import type { TranslationDBService } from "@/lib/translationDb"
 
 export const createVocabularyRoute = createRoute({
   method: "post",
@@ -30,13 +32,39 @@ export const createVocabularyRoute = createRoute({
 
 export type CreateVocabularyRoute = typeof createVocabularyRoute
 
+interface Props {
+  vocabularyService: VocabularyService
+  translatorService: TranslatorService
+  translationDbService: TranslationDBService
+}
+
 export const createVocabularyHandler =
-  (
-    vocabularyService: VocabularyService
-  ): AppRouteHandler<CreateVocabularyRoute> =>
+  ({
+    vocabularyService,
+    translatorService,
+    translationDbService,
+  }: Props): AppRouteHandler<CreateVocabularyRoute> =>
   async c => {
     const input = c.req.valid("json")
-    const vocabulary = await vocabularyService.createVocabulary(input)
-    
+
+    const translationTexts = await translatorService.translateVocab(
+      input.title,
+      input.languageCode
+    )
+
+    const translation = await translationDbService.createTranslation({
+      word: input.title,
+      languageCode: input.languageCode,
+      translations: translationTexts,
+    })
+
+    const inputWithTranslations = {
+      ...input,
+      translationId: translation.id,
+    }
+    const vocabulary = await vocabularyService.createVocabulary(
+      inputWithTranslations
+    )
+
     return c.json({ vocabulary }, 201)
-  } 
+  }

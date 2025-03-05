@@ -1,0 +1,1 @@
+ALTER TABLE "translation" ADD COLUMN "word" text NOT NULL;

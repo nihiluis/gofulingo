@@ -19,6 +19,12 @@ import {
   deleteVocabularyRoute,
   deleteVocabularyHandler,
 } from "./vocabulary"
+import type { TranslatorService } from "@/lib/translator"
+import type { TranslationDBService } from "@/lib/translationDb"
+import { createSingleVocabularyTranslationHandler } from "./vocabulary/translation/createSingle"
+import { createSingleVocabularyTranslationRoute } from "./vocabulary/translation/createSingle"
+import { createMultiVocabularyTranslationsRoute } from "./vocabulary/translation/createMultiple"
+import { createMultiVocabularyTranslationHandler } from "./vocabulary/translation/createMultiple"
 
 export default function createApp() {
   const app = new OpenAPIHono()
@@ -32,20 +38,50 @@ export default function createApp() {
 export type RouteConfig = {
   model: LanguageModelV1
   vocabularyService: VocabularyService
+  translatorService: TranslatorService
+  translationDbService: TranslationDBService
 }
 
 export function applyRoutes(
   app: OpenAPIHono,
-  { model, vocabularyService }: RouteConfig
+  {
+    model,
+    vocabularyService,
+    translatorService,
+    translationDbService,
+  }: RouteConfig
 ) {
   return app
     .openapi(pingRoute, pingHandler)
-    .openapi(createVocabularyRoute, createVocabularyHandler(vocabularyService))
+    .openapi(
+      createVocabularyRoute,
+      createVocabularyHandler({
+        vocabularyService,
+        translatorService,
+        translationDbService,
+      })
+    )
     .openapi(getVocabularyRoute, getVocabularyHandler(vocabularyService))
     .openapi(getVocabulariesRoute, getVocabulariesHandler(vocabularyService))
     .openapi(updateVocabularyRoute, updateVocabularyHandler(vocabularyService))
     .openapi(getSuggestionsRoute, getSuggestionsHandler(vocabularyService))
     .openapi(deleteVocabularyRoute, deleteVocabularyHandler(vocabularyService))
+    .openapi(
+      createSingleVocabularyTranslationRoute,
+      createSingleVocabularyTranslationHandler({
+        vocabularyService,
+        translatorService,
+        translationDbService,
+      })
+    )
+    .openapi(
+      createMultiVocabularyTranslationsRoute,
+      createMultiVocabularyTranslationHandler({
+        vocabularyService,
+        translatorService,
+        translationDbService,
+      })
+    )
 }
 
 export type AppRoutes = typeof applyRoutes

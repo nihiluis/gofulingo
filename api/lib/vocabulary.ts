@@ -17,6 +17,7 @@ export type Vocabulary = {
   id: number
   title: string
   languageCode: LanguageCode
+  translationId: number | null
   createdAt: Date
   updatedAt: Date
 }
@@ -47,6 +48,10 @@ export class VocabularyService {
     query: string,
     languageCode: string
   ): Promise<VocabularySuggestionResult> {
+    logger.info(`Retrieving vocabulary suggestions for ${query}`, {
+      languageCode,
+    })
+
     const result = await generateObject({
       model: this.llm,
       schema: z.object({
@@ -107,8 +112,9 @@ export class VocabularyService {
 
   async updateVocabulary(
     id: number,
-    vocabulary: Omit<VocabularyDB, "id" | "createdAt" | "updatedAt">
+    vocabulary: Partial<Omit<VocabularyDB, "id" | "createdAt" | "updatedAt">>
   ): Promise<void> {
+    logger.info(`Updating vocabulary with id ${id}`, { vocabulary })
     await this.db
       .update(vocabularyTable)
       .set(vocabulary)
@@ -116,6 +122,7 @@ export class VocabularyService {
   }
 
   async deleteVocabulary(id: number): Promise<void> {
+    logger.info(`Deleting vocabulary with id ${id}`)
     await this.db.delete(vocabularyTable).where(eq(vocabularyTable.id, id))
   }
 }
