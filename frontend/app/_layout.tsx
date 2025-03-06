@@ -18,6 +18,7 @@ import { Home } from "~/lib/icons/Home"
 import { PortalHost } from "@rn-primitives/portal"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { Folders } from "~/lib/icons/Folders"
+import Head from "~/components/Head"
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -86,13 +87,16 @@ function NativeLayout({ isDarkColorScheme }: { isDarkColorScheme: boolean }) {
 // Layout for web that doesn't use GestureHandlerRootView
 function WebLayout({ isDarkColorScheme }: { isDarkColorScheme: boolean }) {
   return (
-    <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <QueryClientProvider client={queryClient}>
-        <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-        <DrawerNavigator isDarkColorScheme={isDarkColorScheme} />
-        <PortalHost />
-      </QueryClientProvider>
-    </ThemeProvider>
+    <>
+      <Head />
+      <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+        <QueryClientProvider client={queryClient}>
+          <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+          <DrawerNavigator isDarkColorScheme={isDarkColorScheme} />
+          <PortalHost />
+        </QueryClientProvider>
+      </ThemeProvider>
+    </>
   )
 }
 

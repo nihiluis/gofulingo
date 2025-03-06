@@ -18,18 +18,11 @@ import { CircleHelp } from "~/lib/icons/CircleHelp"
 import VocabularySuggestions from "./VocabularySuggestions"
 import { GofuText } from "../ui/GofuText"
 import { fuzzySearch } from "~/lib/fuzzySearch"
+import { apiGetVocabularyTranslations } from "~/lib/api/vocabularyTranslation"
 
-type VocabularyListProps = {
-  onAddVocabulary: (title: string) => void
-  onEditVocabulary: (id: number, title: string) => void
-  onDeleteVocabulary: (id: number) => void
-}
+type VocabularyListProps = {}
 
-export default function VocabularyList({
-  onAddVocabulary,
-  onEditVocabulary,
-  onDeleteVocabulary,
-}: VocabularyListProps) {
+export default function VocabularyList({}: VocabularyListProps) {
   const language = useAtomValue(languageAtom)
   const languageCode = language.code
   const [searchQuery, setSearchQuery] = useState("")
@@ -37,9 +30,18 @@ export default function VocabularyList({
     string | null
   >(null)
 
-  const { data: vocabulariesResult, refetch: refetchVocabularies } = useQuery({
+  const {
+    data: vocabulariesResult,
+    refetch: refetchVocabularies,
+    error: vocabulariesError,
+    isPending: isGettingVocabularies,
+  } = useQuery({
     queryKey: ["vocabulary", language],
-    queryFn: () => apiGetVocabularies(language.code),
+    queryFn: () => apiGetVocabularyTranslations(language.code),
+    refetchInterval: false,
+    refetchOnWindowFocus: false,
+    refetchIntervalInBackground: false,
+    retry: 1,
   })
 
   const vocabularies = vocabulariesResult || []
@@ -68,13 +70,7 @@ export default function VocabularyList({
     }) => apiGetVocabularySuggestions(query, languageCode),
   })
 
-  const {
-    mutate: addVocabulary,
-    data: addVocabularyData,
-    isPending: isAddingVocabulary,
-    reset: resetAddVocabulary,
-    error: mutateAddVocabularyError,
-  } = useMutation({
+  const { mutate: addVocabulary, isPending: isAddingVocabulary } = useMutation({
     mutationFn: ({
       query,
       languageCode,
@@ -113,7 +109,7 @@ export default function VocabularyList({
     mutateSuggestionsError?.message ?? customSuggestionsError ?? ""
 
   return (
-    <View className="flex-1 gap-4 w-full max-w-3xl">
+    <View className="flex-1 gap-4 w-full max-w-3xl flex-grow">
       <View className="flex-row items-center gap-2">
         <Input
           className="flex-1"
@@ -145,7 +141,7 @@ export default function VocabularyList({
           <GofuText className="text-primary-foreground">Add</GofuText>
         </Button>
       </View>
-      {suggestionsError.length > 0 && (
+      {!isGettingSuggestions && suggestionsError.length > 0 && (
         <GofuText className="text-destructive">{suggestionsError}</GofuText>
       )}
       <VocabularySuggestions
@@ -155,26 +151,42 @@ export default function VocabularyList({
         suggestions={suggestions || []}
       />
       <View className="flex-1">
-        <GofuText className="text-muted-foreground">Vocab</GofuText>
-        {filteredVocabulary.length === 0 && (
+        {!vocabulariesError &&
+          !isGettingVocabularies &&
+          filteredVocabulary.length === 0 && (
+            <GofuText className="text-muted-foreground text-center">
+              {vocabularies.length === 0
+                ? "No vocabulary items found. Add your first one!"
+                : "No results found for your search."}
+            </GofuText>
+          )}
+        {isGettingVocabularies && (
           <GofuText className="text-muted-foreground text-center">
-            {vocabularies.length === 0
-              ? "No vocabulary items found. Add your first one!"
-              : "No results found for your search."}
+            Loading...
           </GofuText>
         )}
-        <FlatList
-          data={filteredVocabulary}
-          keyExtractor={item => item.id.toString()}
-          renderItem={({ item }) => (
-            <VocabularyItem
-              id={item.id}
-              text={item.title}
-              onEdit={onEditVocabulary}
-              onDelete={() => deleteVocabulary({ id: item.id })}
-            />
-          )}
-        />
+        {vocabulariesError && (
+          <GofuText className="text-destructive">
+            {vocabulariesError.message}
+          </GofuText>
+        )}
+        {!vocabulariesError && (
+          <FlatList
+            data={filteredVocabulary}
+            keyExtractor={item => item.id.toString()}
+            renderItem={({ item }) => (
+              <VocabularyItem
+                id={item.id}
+                text={item.title}
+                translations={item.translations}
+                onEdit={() => {
+                  console.log("onEdit not implemented")
+                }}
+                onDelete={() => deleteVocabulary({ id: item.id })}
+              />
+            )}
+          />
+        )}
       </View>
     </View>
   )

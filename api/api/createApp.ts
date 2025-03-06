@@ -19,12 +19,19 @@ import {
   deleteVocabularyRoute,
   deleteVocabularyHandler,
 } from "./vocabulary"
+import {
+  createSingleVocabularyTranslationRoute,
+  createSingleVocabularyTranslationHandler,
+  createMultiVocabularyTranslationsRoute,
+  createMultiVocabularyTranslationHandler,
+  getVocabularyTranslationRoute,
+  getVocabularyTranslationHandler,
+  getVocabularyTranslationsHandler,
+  getVocabularyTranslationsRoute,
+} from "./vocabulary/translation"
 import type { TranslatorService } from "@/lib/translator"
 import type { TranslationDBService } from "@/lib/translationDb"
-import { createSingleVocabularyTranslationHandler } from "./vocabulary/translation/createSingle"
-import { createSingleVocabularyTranslationRoute } from "./vocabulary/translation/createSingle"
-import { createMultiVocabularyTranslationsRoute } from "./vocabulary/translation/createMultiple"
-import { createMultiVocabularyTranslationHandler } from "./vocabulary/translation/createMultiple"
+import type { VocabularyTranslationService } from "@/lib/vocabularyTranslation"
 
 export default function createApp() {
   const app = new OpenAPIHono()
@@ -40,6 +47,7 @@ export type RouteConfig = {
   vocabularyService: VocabularyService
   translatorService: TranslatorService
   translationDbService: TranslationDBService
+  vocabularyTranslationService: VocabularyTranslationService
 }
 
 export function applyRoutes(
@@ -49,6 +57,7 @@ export function applyRoutes(
     vocabularyService,
     translatorService,
     translationDbService,
+    vocabularyTranslationService,
   }: RouteConfig
 ) {
   return app
@@ -59,6 +68,19 @@ export function applyRoutes(
         vocabularyService,
         translatorService,
         translationDbService,
+      })
+    )
+    // must sit above getVocabularyRoute
+    .openapi(
+      getVocabularyTranslationRoute,
+      getVocabularyTranslationHandler({
+        vocabularyTranslationService,
+      })
+    )
+    .openapi(
+      getVocabularyTranslationsRoute,
+      getVocabularyTranslationsHandler({
+        vocabularyTranslationService,
       })
     )
     .openapi(getVocabularyRoute, getVocabularyHandler(vocabularyService))

@@ -14,6 +14,7 @@ import { GofuText } from "../ui/GofuText"
 export type VocabularyItemProps = {
   id: number
   text: string
+  translations: string[]
   onEdit: (id: number, text: string) => void
   onDelete: (id: number) => void
   className?: string
@@ -22,6 +23,7 @@ export type VocabularyItemProps = {
 export default function VocabularyItem({
   id,
   text,
+  translations,
   onEdit,
   onDelete,
   className,
@@ -34,7 +36,12 @@ export default function VocabularyItem({
         "flex flex-row items-center justify-between p-3 border-b border-border",
         className
       )}>
-      <GofuText className="text-base text-foreground">{text}</GofuText>
+      <View className="flex-1 flex-col">
+        <GofuText className="text-base text-foreground">{text}</GofuText>
+        <GofuText className="text-sm text-muted-foreground">
+          {translations.join(", ")}
+        </GofuText>
+      </View>
       <DropdownMenu onOpenChange={setOpen}>
         <DropdownMenuTrigger>
           <Pressable
