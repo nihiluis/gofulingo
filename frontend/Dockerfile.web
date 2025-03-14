@@ -4,11 +4,18 @@ FROM node:20-slim as builder
 # Set working directory
 WORKDIR /app
 
+# Add build argument for backend API URL
+ARG EXPO_PUBLIC_BACKEND_API_URL
+ENV EXPO_PUBLIC_BACKEND_API_URL=${EXPO_PUBLIC_BACKEND_API_URL}
+
 # Copy package files
 COPY package.json ./
 
 # Install dependencies
 RUN npm install
+
+# Create or append to .env file with the environment variable
+RUN echo "EXPO_PUBLIC_BACKEND_API_URL=${EXPO_PUBLIC_BACKEND_API_URL}" >> .env
 
 # Copy the rest of the application
 COPY . .
