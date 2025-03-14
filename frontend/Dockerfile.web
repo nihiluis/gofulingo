@@ -14,13 +14,12 @@ COPY package.json ./
 # Install dependencies
 RUN npm install
 
-# Create or append to .env file with the environment variable
-RUN echo "EXPO_PUBLIC_BACKEND_API_URL=${EXPO_PUBLIC_BACKEND_API_URL}" >> .env
-
 # Copy the rest of the application
 COPY . .
 
-# Build the web version
+# Create a proper .env file before building
+RUN echo "EXPO_PUBLIC_BACKEND_API_URL=${EXPO_PUBLIC_BACKEND_API_URL}" > .env.production
+
 RUN npm run build:web
 
 # Production stage
