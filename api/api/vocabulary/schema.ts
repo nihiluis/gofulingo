@@ -1,3 +1,4 @@
+import { SuggestionSchema } from "@/lib/vocabulary"
 import { z } from "@hono/zod-openapi"
 
 export const LanguageCodeSchema = z.enum(["fr", "es", "en"])
@@ -50,5 +51,5 @@ export const VocabularyTranslationResponseSchema = z.object({
 })
 
 export const SuggestionsResponseSchema = z.object({
-  suggestions: z.array(z.string()),
+  suggestions: z.array(SuggestionSchema),
 })

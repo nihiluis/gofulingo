@@ -8,7 +8,7 @@ import { z } from "zod"
 import { generateObject } from "ai"
 
 export interface VocabularySuggestionResult {
-  suggestions: string[]
+  suggestions: Suggestion[]
 }
 
 export type LanguageCode = "fr" | "es" | "en"
@@ -22,11 +22,18 @@ export type Vocabulary = {
   updatedAt: Date
 }
 
+export const SuggestionSchema = z.object({
+  title: z.string(),
+  possibleTranslations: z.array(z.string()),
+})
+
+type Suggestion = z.infer<typeof SuggestionSchema>
+
 export class VocabularyService {
   constructor(
     private readonly db: PostgresJsDatabase,
     private readonly llm: LanguageModelV1
-  ) {}
+  ) { }
 
   async createVocabulary(
     vocabulary: Omit<VocabularyDB, "id" | "createdAt" | "updatedAt">
@@ -55,7 +62,7 @@ export class VocabularyService {
     const result = await generateObject({
       model: this.llm,
       schema: z.object({
-        suggestions: z.array(z.string()),
+        suggestions: z.array(SuggestionSchema),
       }),
       messages: [
         {
@@ -63,7 +70,7 @@ export class VocabularyService {
           content: [
             {
               type: "text",
-              text: `I have heard the word '${query}' in a conversation. I'm not sure if it's written correctly, please check and suggest potential words in the language (code=${languageCode}). If its a verb, please suggest the infinitive form.`,
+              text: `I have heard '${query}' (input) in a conversation. I'm not sure if it's written correctly, please check and suggest potential words or expressions in this language (code=${languageCode}). If it the input consists of only a verb, please suggest the infinitive form. For example, inputting 'nage' should become 'nager'. If the input consists of only a noun, prefix the article. 'pomme' becomes 'la pomme'. The suggestion should also include all possible translations that would be used in modern day conversation or articles.`,
             },
           ],
         },

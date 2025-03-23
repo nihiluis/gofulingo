@@ -105,11 +105,16 @@ export async function apiUpdateVocabulary(
   return data?.vocabulary ?? null
 }
 
+export interface VocabularySuggestion {
+  title: string
+  possibleTranslations: string[]
+}
+
 // Get vocabulary suggestions
 export async function apiGetVocabularySuggestions(
   query: string,
   languageCode: string
-): Promise<string[]> {
+): Promise<VocabularySuggestion[]> {
   const { data, error } = await backendClient.POST(
     "/api/v1/vocabulary/suggestions",
     {
