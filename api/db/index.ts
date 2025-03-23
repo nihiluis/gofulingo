@@ -1,3 +1,4 @@
+import { logger } from "@/lib/pino"
 import { drizzle } from "drizzle-orm/node-postgres"
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js"
 
