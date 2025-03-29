@@ -24,8 +24,8 @@ function LanguageSelectDropdown() {
   const [language, setLanguage] = useAtom(languageAtom)
   const [open, setOpen] = React.useState(false)
 
-  const handleSelectLanguage = (selectedLanguage: Language) => {
-    setLanguage(selectedLanguage)
+  const handleSelectLanguage = async (selectedLanguage: Language) => {
+    await setLanguage(selectedLanguage)
     setOpen(false)
   }
 

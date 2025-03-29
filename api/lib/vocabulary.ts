@@ -70,7 +70,7 @@ export class VocabularyService {
           content: [
             {
               type: "text",
-              text: `I have heard '${query}' (input) in a conversation. I'm not sure if it's written correctly, please check and suggest potential words or expressions in this language (code=${languageCode}). If it the input consists of only a verb, please suggest the infinitive form. For example, inputting 'nage' should become 'nager'. If the input consists of only a noun, prefix the article. 'pomme' becomes 'la pomme'. The suggestion should also include all possible translations that would be used in modern day conversation or articles.`,
+              text: `I have heard '${query}' (input) in a conversation. I'm not sure if it's written correctly, please check and suggest potential words or expressions in this language (code=${languageCode}). If it the input consists of only a verb, please suggest the infinitive form. For example, inputting 'nage' should become 'nager'. If the input consists of only a noun, prefix the article. 'pomme' becomes 'la pomme'. The suggestion should also include all possible translations (to English)that would be used in modern day conversation or articles.`,
             },
           ],
         },

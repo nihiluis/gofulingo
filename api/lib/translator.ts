@@ -42,7 +42,7 @@ class LLMTranslatorService implements TranslatorService {
           content: [
             {
               type: "text",
-              text: `Translate '${vocabText}' from language code=${languageCode} to english. Return all possible translations that would be used in modern day conversation or articles.`,
+              text: `Translate '${vocabText}' from language code=${languageCode} to English. Return all possible translations that would be used in modern day conversation or articles.`,
             },
           ],
         },
