@@ -1,4 +1,4 @@
-import type { LanguageModelV1 } from "ai"
+import type { LanguageModel } from "ai"
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js"
 import {
   vocabularyFlashcardTable,
@@ -7,8 +7,8 @@ import {
 export class VocabularyFlashcardService {
   constructor(
     private readonly db: PostgresJsDatabase,
-    private readonly llm: LanguageModelV1
-  ) {}
+    private readonly llm: LanguageModel
+  ) { }
 
   async createVocabularyFlashcard(
     vocabularyId: number,
@@ -28,7 +28,7 @@ export class VocabularyFlashcardService {
 
 export function newVocabularyFlashcardService(
   db: PostgresJsDatabase,
-  llm: LanguageModelV1
+  llm: LanguageModel
 ) {
   return new VocabularyFlashcardService(db, llm)
 }

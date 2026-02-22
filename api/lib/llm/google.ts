@@ -1,7 +1,7 @@
 import { createGoogleGenerativeAI } from "@ai-sdk/google"
-import { type LanguageModelV1 } from "ai"
+import { type LanguageModel } from "ai"
 
-export function createGoogleModel(): LanguageModelV1 {
+export function createGoogleModel(): LanguageModel {
   const apiKey = process.env.GOOGLE_API_KEY
   if (!apiKey) {
     throw new Error("GOOGLE_API_KEY is not set")

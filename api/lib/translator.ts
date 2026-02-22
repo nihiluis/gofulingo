@@ -1,5 +1,5 @@
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js"
-import { generateObject, type LanguageModelV1 } from "ai"
+import { generateObject, type LanguageModel } from "ai"
 import { z } from "zod"
 import { logger } from "./pino"
 
@@ -22,7 +22,7 @@ export interface TranslatorService {
 class LLMTranslatorService implements TranslatorService {
   constructor(
     private readonly db: PostgresJsDatabase,
-    private readonly llm: LanguageModelV1
+    private readonly llm: LanguageModel
   ) {}
 
   async translateVocab(
@@ -104,7 +104,7 @@ class LLMTranslatorService implements TranslatorService {
 
 export function newLLMTranslatorService(
   db: PostgresJsDatabase,
-  llm: LanguageModelV1
+  llm: LanguageModel
 ): TranslatorService {
   return new LLMTranslatorService(db, llm)
 }

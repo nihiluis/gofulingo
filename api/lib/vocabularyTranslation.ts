@@ -21,7 +21,7 @@ export class VocabularyTranslationService {
       throw new Error("Vocabulary ID is required")
     }
 
-    logger.info(`Getting vocabulary and translations`, { vocabularyId: id })
+    logger.info({ id }, "getVocabularyTranslation")
 
     const result = await this.db
       .select()

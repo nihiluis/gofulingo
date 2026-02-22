@@ -3,7 +3,7 @@ import type { VocabularyDB } from "../db/schema"
 import { vocabularyTable } from "../db/schema"
 import { eq } from "drizzle-orm"
 import { logger } from "./pino"
-import type { LanguageModelV1 } from "ai"
+import type { LanguageModel } from "ai"
 import { z } from "zod"
 import { generateObject } from "ai"
 
@@ -32,13 +32,13 @@ type Suggestion = z.infer<typeof SuggestionSchema>
 export class VocabularyService {
   constructor(
     private readonly db: PostgresJsDatabase,
-    private readonly llm: LanguageModelV1
+    private readonly llm: LanguageModel
   ) { }
 
   async createVocabulary(
     vocabulary: Omit<VocabularyDB, "id" | "createdAt" | "updatedAt">
   ): Promise<Vocabulary> {
-    logger.info(`Creating vocabulary`, { vocabulary })
+    logger.info({ vocabulary }, "createVocabulary")
 
     const result = await this.db
       .insert(vocabularyTable)
@@ -55,9 +55,7 @@ export class VocabularyService {
     query: string,
     languageCode: string
   ): Promise<VocabularySuggestionResult> {
-    logger.info(`Retrieving vocabulary suggestions for ${query}`, {
-      languageCode,
-    })
+    logger.info({ query, languageCode }, "retrieveVocabularySuggestions")
 
     const result = await generateObject({
       model: this.llm,
@@ -85,7 +83,7 @@ export class VocabularyService {
   }
 
   async getVocabulary(id: number): Promise<Vocabulary | null> {
-    logger.info(`Getting vocabulary with id ${id}`)
+    logger.info({ id }, "getVocabulary")
 
     const result = await this.db
       .select()
@@ -103,7 +101,7 @@ export class VocabularyService {
   }
 
   async getVocabularies(languageCode: LanguageCode): Promise<Vocabulary[]> {
-    logger.info(`Getting vocabularies with language code`, { languageCode })
+    logger.info({ languageCode }, "getVocabularies")
 
     return this.db
       .select()
@@ -121,7 +119,7 @@ export class VocabularyService {
     id: number,
     vocabulary: Partial<Omit<VocabularyDB, "id" | "createdAt" | "updatedAt">>
   ): Promise<void> {
-    logger.info(`Updating vocabulary with id ${id}`, { vocabulary })
+    logger.info({ id, vocabulary }, "updateVocabulary")
     await this.db
       .update(vocabularyTable)
       .set(vocabulary)
@@ -129,14 +127,14 @@ export class VocabularyService {
   }
 
   async deleteVocabulary(id: number): Promise<void> {
-    logger.info(`Deleting vocabulary with id ${id}`)
+    logger.info({ id }, "deleteVocabulary")
     await this.db.delete(vocabularyTable).where(eq(vocabularyTable.id, id))
   }
 }
 
 export function newVocabularyService(
   db: PostgresJsDatabase,
-  llm: LanguageModelV1
+  llm: LanguageModel
 ) {
   return new VocabularyService(db, llm)
 }
